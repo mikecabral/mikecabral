@@ -1,27 +1,19 @@
-name: Profile Summary Cards
-
+name: Metrics
 on:
-  schedule:
-    - cron: '0 0 * * *'  # every day
+  schedule: [{cron: "0 * * * *"}]
+  push: {branches: ["main"]}
   workflow_dispatch:
 
 jobs:
-  build:
+  github-metrics:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
-
-      - name: Generate profile summary cards
-        uses: vn7n24fzkq/github-profile-summary-cards@release
+      - name: Generate Metrics
+        uses: lowlighter/metrics@latest
         with:
-          USERNAME: mikecabral
-          TOKEN: ${{ secrets.GH_TOKEN }}
-          UTC_OFFSET: -4
-
-      - name: Commit and push
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add profile-summary-card-output
-          git diff --cached --quiet || git commit -m "Update GitHub profile summary cards"
-          git push
+          token: ${{ secrets.GH_TOKEN }}
+          base: header, activity, community, repositories, metadata
+          plugin_lines: yes
+          plugin_languages: yes
+          plugin_achievements: yes
+          config_timezone: America/Toronto
